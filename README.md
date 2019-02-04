@@ -53,13 +53,25 @@ dat$hcTree = hcTree
 cluster_map = fviz_cluster(list(data =dat, cluster = hcTree, repel = TRUE))
 ```
 Ok so now I need to randomly assign with cluster????
+This is not working.  So maybe subset each cluster then randomly assign based on that??
 ```{r}
 library(experiment)
 library(blockrand)
 test_random_three = randomize(data = dat, group = c("Treat1", "Treat2", "Control"), block = "hcTree")
-test_random_three$treatment
 
 test_blockrand =  blockrand(n = 12, num.levels = 3, stratum = "hcTree")
+```
+Now try manually
+Do this for each cluster
+```{r}
+library(randomizeR)
+dat_clus_1 = subset(dat, hcTree == 1)
+dat_clus_1
+test_random_three = randomize(data = dat_clus_1, group = c("Treat1", "Treat2", "Control"))
+test_crPar = crPar(N = 4, K = 3)
+test_crPar
+ran_assign_clus1 = genSeq(test_crPar)
+ran_assign_clus1
 ```
 
 
