@@ -6,44 +6,26 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-Library 
+One problem researchers face when wanting to random either indivudals or clusters to two or more interventions is the fact that randomization does not always.  Techniques such as matched designs and stratifed which can match indiviudals / clusters on charactersitcs prior to randomization.
+
+In this example, I provide a framework for how to use cluster analysis that allows for the inclusion of several different kinds of variables (e.g. continious, oridnal, binary).     
+
+First, we need to library the packages that we will use in this example
 ```{r}
 library(experiment)
+library(cluster)
+library(factoextra)
 ```
 Now generate random data
 ```{r}
 dat = data.frame( race = c(.5, .4 ,.3, .2, .1, .15, .34, .78, .9, .2, .2, .3), gender = c(.45, .32, .21, .12, .9, .8, .7,.5, .45, .23, .2, .3), bin = c(rep(1, 6), rep(0,6)))
 dat
 ```
-Now try randomize in experiment
-Works with unequal designs
-```{r}
-test_random = randomize(data = dat, group = c("Treat", "Control"))
-test_random$treatment
 
-test_random_four = randomize(data = dat, group = c("Treat1", "Treat2", "Treat3", "Control"), block = "bin")
-
-test_random_four$treatment
-test_random_four$block
-
-## Didn't work
-test_random_match = randomize(data = dat, group = c("Treat", "Control"), match = c("race", "gender"))
-
-test_random_match = randomize(data = dat, group = c("Treat", "Control"), match = "bin")
-```
-What if we get the mathabolis distance.  Then we use a cluster design to see which things cluster together.  Then we randomly assign within those clusters.  
-
-Man doesn't do well with binary or non-normal variables, which may be fine for our case
-```{r}
-man_dist =  mahalanobis(dat, center = TRUE, cov(dat))
-man_dist
-```
 Try ranked mah for help with non-normal bin data
 gower works well with nominal, binary data and can be plugged into 
 ```{r}
-library(nearfar)
-library(cluster)
-library(factoextra)
+
 smahal(dat)
 gower_dis = daisy(dat, metric = "gower")
 gower_dis
@@ -73,11 +55,6 @@ test_crPar
 ran_assign_clus1 = genSeq(test_crPar)
 ran_assign_clus1
 ```
-
-
-
-
-
 
 
 
